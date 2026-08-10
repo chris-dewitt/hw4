@@ -16,7 +16,7 @@ source "$(dirname "$0")/config.env"
 ACR_NAME="${1:?usage: ./aks_bonus.sh <your-acr-name>   (from deploy_azure.sh output)}"
 
 SUFFIX="$(echo "${USER:-$RANDOM}" | tr -cd 'a-z0-9' | cut -c1-12)"
-LOCATION="centralus"                         # course default — do NOT use eastus/eastus2
+LOCATION="${LOCATION:-eastus2}"              # default eastus2 (centralus is blocked on Azure for Students); override: export LOCATION=<allowed region>
 RG="rg-data789-hw4-aks-${SUFFIX}"
 CLUSTER="aks-data789-hw4"
 

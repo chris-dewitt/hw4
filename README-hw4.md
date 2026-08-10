@@ -89,7 +89,7 @@ kubectl get pods                # ← screenshot: a NEW pod already restoring 3/
 kubectl apply -f k8s/blue-green/ && ./scripts/bluegreen_switch.sh green
 ```
 
-**6 — Answer the 2 questions** in `ANSWERS.md`.
+**6 — Answer the 3 questions** in `ANSWERS.md`.
 
 **HPA note:** needs `minikube addons enable metrics-server` (local_up.sh does this); give it a
 minute or `kubectl get hpa` shows `<unknown>`.
@@ -107,7 +107,7 @@ curl https://<fqdn>/health                      # → {"status":"ok"}
 ./scripts/smoke_test.sh https://<fqdn>          # POST /predict → a fraud decision  ← screenshot
 ./teardown_azure.sh                             # ← DO THIS THE SAME DAY
 ```
-Auth is AAD / managed-identity (no keys); region `centralus`.
+Auth is AAD / managed-identity (no keys); default region `eastus2` (override with `export LOCATION=<allowed region>`).
 
 ## Path C · Bonus — real AKS
 ```bash

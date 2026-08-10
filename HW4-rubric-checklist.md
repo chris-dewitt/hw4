@@ -20,7 +20,7 @@ P2-style: every item is a **check you can see**. Grade from submitted **evidence
 | ☐ | **Service** `type: LoadBalancer`, `/predict` reachable | `service.yaml` + smoke 200 | 6 |
 | ☐ | **[auto]** **HPA tuned to spec** — 40% CPU, `maxReplicas: 8` (real `TARGETS`, not `<unknown>`) | `hpa.yaml` + `kubectl get hpa` | 8 |
 | ☐ | **Self-healing** — a pod deleted, Kubernetes recreates it (back to 3/3) | screenshot | 8 |
-| ☐ | **Short answers** (2) reasonable | `ANSWERS.md` | 4 |
+| ☐ | **Short answers** (3) reasonable | `ANSWERS.md` | 4 |
 
 ## B. Zero-downtime update (25 pts)
 
