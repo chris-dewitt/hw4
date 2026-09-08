@@ -58,6 +58,16 @@ hw4/
 Prereqs: Docker Desktop + Minikube, **or** open the repo in the `.devcontainer` / Codespaces
 (kubectl + minikube preinstalled).
 
+> **Run the `scripts/` from a Unix-style shell.** They are bash scripts and are meant to run in
+> **GitHub Codespaces, the included dev container, WSL, or Linux/macOS**.
+> **On Windows with Git Bash:** Git Bash silently rewrites Unix-style paths (things like `/predict`
+> and `/tmp/stop`) into Windows paths, which makes `rolling_update_demo_incluster.sh` look like it
+> failed when the real problem is your shell, not your Kubernetes deployment. To avoid this, prefix
+> the command with `MSYS_NO_PATHCONV=1`, e.g.:
+> ```bash
+> MSYS_NO_PATHCONV=1 ./scripts/rolling_update_demo_incluster.sh ghcr.io/rfsalas/trustbank-fraud:v2
+> ```
+
 **1 — Bring up the baseline:**
 ```bash
 ./scripts/local_up.sh          # applies Redis + API + Service + HPA, waits for ready
