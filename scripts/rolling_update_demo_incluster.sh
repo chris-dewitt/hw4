@@ -30,7 +30,9 @@ trap cleanup EXIT
 
 echo "▶ starting in-cluster load pod → http://${SVC}${PREDICT_PATH} (0.2s cadence)"
 # A small throwaway curl pod runs the loop until we drop a /tmp/stop file into it.
-kubectl run "$POD" --image=curlimages/curl:latest --restart=Never \
+# Pin the curl tag (not :latest) so the throwaway pod is reproducible — a floating
+# tag can change under us and break the kit silently. An image is an immutable unit.
+kubectl run "$POD" --image=curlimages/curl:8.12.1 --restart=Never \
   --env="SVC=${SVC}" --env="PREDICT_PATH=${PREDICT_PATH}" --env="PAYLOAD=${PAYLOAD}" \
   --command -- sh -c '
     total=0; ok=0; bad=0
