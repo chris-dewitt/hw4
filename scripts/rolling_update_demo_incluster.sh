@@ -24,21 +24,24 @@ NEW_IMAGE="${1:?usage: rolling_update_demo_incluster.sh <new-image-ref>   e.g. g
 SVC="trustbank-fraud"                                  # in-cluster Service DNS name (k8s/service.yaml)
 POD="rollout-load-$$"
 PAYLOAD="$(cat "$(dirname "$0")/sample_transaction.json")"
+# Read the Service's exposed port from the live manifest rather than hardcoding it.
+SVC_PORT="$(kubectl get svc "$SVC" -o jsonpath='{.spec.ports[0].port}' 2>/dev/null)"
+SVC_PORT="${SVC_PORT:-80}"
 
 cleanup() { kubectl delete pod "$POD" --ignore-not-found --now >/dev/null 2>&1 || true; }
 trap cleanup EXIT
 
-echo "▶ starting in-cluster load pod → http://${SVC}${PREDICT_PATH} (0.2s cadence)"
+echo "▶ starting in-cluster load pod → http://${SVC}:${SVC_PORT}${PREDICT_PATH} (0.2s cadence)"
 # A small throwaway curl pod runs the loop until we drop a /tmp/stop file into it.
 # Pin the curl tag (not :latest) so the throwaway pod is reproducible — a floating
 # tag can change under us and break the kit silently. An image is an immutable unit.
 kubectl run "$POD" --image=curlimages/curl:8.12.1 --restart=Never \
-  --env="SVC=${SVC}" --env="PREDICT_PATH=${PREDICT_PATH}" --env="PAYLOAD=${PAYLOAD}" \
+  --env="SVC=${SVC}" --env="SVC_PORT=${SVC_PORT}" --env="PREDICT_PATH=${PREDICT_PATH}" --env="PAYLOAD=${PAYLOAD}" \
   --command -- sh -c '
     total=0; ok=0; bad=0
     while [ ! -f /tmp/stop ]; do
       code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 \
-             -X POST "http://${SVC}:80${PREDICT_PATH}" \
+             -X POST "http://${SVC}:${SVC_PORT}${PREDICT_PATH}" \
              -H "Content-Type: application/json" -d "${PAYLOAD}" || echo 000)
       total=$((total+1)); if [ "$code" = "200" ]; then ok=$((ok+1)); else bad=$((bad+1)); fi
       sleep 0.2
