@@ -106,6 +106,16 @@ kubectl apply -f k8s/blue-green/ && ./scripts/bluegreen_switch.sh green
 **HPA note:** needs `minikube addons enable metrics-server` (local_up.sh does this); give it a
 minute or `kubectl get hpa` shows `<unknown>`.
 
+**HPA shows `<unknown>`? — troubleshoot it:**
+1. Enable the metrics pipeline: `minikube addons enable metrics-server` (AKS has it built in).
+2. Confirm metrics are flowing: `kubectl top pods` — it should list CPU/memory per pod. If it
+   errors or is empty, metrics-server isn't ready yet.
+3. Inspect the autoscaler: `kubectl describe hpa trustbank-fraud` — the Events and Conditions
+   explain why the target can't be read.
+4. The target reads `<unknown>` until the pods actually report metrics. A crash loop (no running
+   pod to measure) or a fresh rollout (new pods haven't reported yet) restarts that wait — so
+   `<unknown>` right after a change is normal; give it ~1 minute and re-check `kubectl get hpa`.
+
 ## Path B · Required — Azure Container Apps
 
 **New to Azure? Read [`AZURE-QUICKSTART.md`](AZURE-QUICKSTART.md) first** — sign-up, staying at ~$0, and one-click teardown.
