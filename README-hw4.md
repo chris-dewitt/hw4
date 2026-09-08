@@ -83,11 +83,21 @@ kubectl get pods                # ← screenshot: a NEW pod already restoring 3/
 ```
 
 **5 — Zero-downtime update + blue-green:**
+
+For the **graded 0-dropped-requests evidence, use the in-cluster demo.** It runs the
+request loop from a throwaway pod that hits the Service DNS name (`trustbank-fraud`),
+so it follows endpoints as pods are replaced:
 ```bash
-./scripts/rolling_update_demo.sh http://localhost:8080 ghcr.io/rfsalas/trustbank-fraud:v2
+./scripts/rolling_update_demo_incluster.sh ghcr.io/rfsalas/trustbank-fraud:v2
 #   → "dropped: 0"  ← screenshot
 kubectl apply -f k8s/blue-green/ && ./scripts/bluegreen_switch.sh green
 ```
+> **Do not use `kubectl port-forward` to measure zero-drop.** A port-forward binds to
+> **one** pod and dies the instant that pod is replaced — which is exactly what a rolling
+> update does. The failed requests you'd see are the tunnel dropping, not the Deployment,
+> so they're a false artifact of the test method. The host-based
+> `scripts/rolling_update_demo.sh` is fine for a quick look against a stable URL, but the
+> in-cluster script above is the one that produces valid graded evidence.
 
 **6 — Answer the 3 questions** in `ANSWERS.md`.
 
