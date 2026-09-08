@@ -37,6 +37,8 @@ spec:
           env:
             - name: REDIS_HOST                   # the API reads customer features from Redis…
               value: "redis"                     # …at this Service name (see k8s/redis.yaml)
+            - name: REDIS_PORT                   # explicit: overrides the tcp://… value that
+              value: "6379"                      # Kubernetes service links would otherwise inject
           resources:
             requests:                             # what the scheduler reserves
               cpu: "100m"

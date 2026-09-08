@@ -30,6 +30,8 @@ spec:
           env:
             - name: REDIS_HOST
               value: "redis"
+            - name: REDIS_PORT                   # explicit: overrides the tcp://… value that
+              value: "6379"                      # Kubernetes service links would otherwise inject
           resources:
             requests: { cpu: "100m", memory: "128Mi" }
             limits:   { cpu: "500m", memory: "256Mi" }
