@@ -15,6 +15,14 @@ NEW_IMAGE="${2:?provide the new image ref, e.g. trustbank-fraud:v2}"
 PAYLOAD="$(dirname "$0")/sample_transaction.json"
 STOP="$(mktemp)"
 
+echo "⚠️  QUICK LOOK ONLY — not for graded evidence."
+echo "    This script drives load over a port-forward (or other single-target URL). A"
+echo "    port-forward binds to ONE pod and dies when that pod is replaced — exactly what"
+echo "    a rolling update does — so it can report FALSE drops that are an artifact of the"
+echo "    test method, not the deployment. For graded zero-drop evidence use the in-cluster"
+echo "    script: ./scripts/rolling_update_demo_incluster.sh <new-image-ref>"
+echo
+
 echo "▶ hammering ${BASE}${PREDICT_PATH} … (rollout starts in 3s)"
 total=0; ok=0; bad=0
 ( while [ ! -f "${STOP}.done" ]; do
