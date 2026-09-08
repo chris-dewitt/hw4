@@ -51,7 +51,9 @@ hw4/
 
 ---
 
-## Path A · Full marks — local Kubernetes
+## Parts 1 and 2 — local Kubernetes (80 points)
+
+> Part 3 on Azure (below) is **required** for the remaining 20 points — it is not optional.
 
 Prereqs: Docker Desktop + Minikube, **or** open the repo in the `.devcontainer` / Codespaces
 (kubectl + minikube preinstalled).
