@@ -27,13 +27,16 @@ hw4/
 ├─ scripts/
 │  ├─ local_up.sh                 # one-shot Minikube bring-up (pulls the image + Redis)
 │  ├─ smoke_test.sh               # POST a real transaction to /predict
-│  ├─ rolling_update_demo.sh      # the 2-min zero-drop demo
+│  ├─ rolling_update_demo.sh      # quick look via port-forward — can report FALSE drops in a rollout
+│  ├─ rolling_update_demo_incluster.sh  # the graded zero-drop demo (loops from inside the cluster)
 │  ├─ bluegreen_switch.sh         # flip blue↔green
 │  └─ sample_transaction.json     # a real /predict body
 ├─ deploy_azure.sh / teardown_azure.sh   # the required Azure step
 ├─ aks_bonus.sh                   # bonus: same manifests on real AKS
 ├─ .devcontainer/                 # ready env: kubectl + az + minikube
 ├─ .github/workflows/autograde.yml# auto-checks your manifests on every push
+├─ .gitattributes                 # forces LF line endings on .sh (Windows-safe checkouts)
+├─ .gitignore                     # files git ignores
 ├─ GITHUB-QUICKSTART.md           # how to submit via GitHub (no command line)
 ├─ AZURE-QUICKSTART.md            # Azure for Students: sign up, stay free, tear down
 ├─ ANSWERS.md                     # the 3 short-answer questions — fill these in
