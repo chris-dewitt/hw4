@@ -27,6 +27,7 @@ spec:
         color: blue                    # only used by the blue-green variant (k8s/blue-green/)
         # HW4: add  owner: <your-onyen>  here (and on the Deployment's metadata.labels above)
     spec:
+      terminationGracePeriodSeconds: 30   # give the drain below time to finish
       containers:
         - name: fraud
           image: ghcr.io/rfsalas/trustbank-fraud:v1   # the provided P2 image (change if published elsewhere)
@@ -64,5 +65,14 @@ spec:
             periodSeconds: 15
             timeoutSeconds: 2
             failureThreshold: 3
+          lifecycle:
+            preStop:
+              exec:
+                # A terminating pod stops accepting traffic BEFORE it is removed from the
+                # Service's endpoint list. Without this pause, in-flight requests are still
+                # being routed here as the container goes away — that is where the "dropped"
+                # requests come from, even with maxUnavailable: 0. Sleep long enough for the
+                # endpoint removal to propagate.
+                command: ["sh", "-c", "sleep 5"]
 # Deploy Redis alongside this so /predict can score:
 #   kubectl apply -f k8s/            # applies deployment, service, hpa, redis together
