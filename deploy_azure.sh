@@ -60,11 +60,17 @@ az provider register -n Microsoft.OperationalInsights --wait
 echo "▶ creating resource group…"
 az group create -n "$RG" -l "$LOCATION" -o none
 
+echo "▶ checking registry name availability…"
+if [ "$(az acr check-name -n "$ACR_NAME" --query nameAvailable -o tsv)" = "false" ]; then
+  ACR_NAME="$(echo "${ACR_NAME}$(printf '%04x%02x' "$RANDOM" "$((RANDOM % 256))")" | cut -c1-50)"
+  echo "   ⚠️  registry name already in use — using '${ACR_NAME}' instead"
+fi
+
 echo "▶ creating registry (Basic, admin user disabled — AAD auth only)…"
 az acr create -n "$ACR_NAME" -g "$RG" --sku Basic --admin-enabled false -o none
 
 echo "▶ importing the provided public image into your registry (no build, no keys)…"
-az acr import -n "$ACR_NAME" --source "$IMAGE" --image "${APP_NAME}:${TAG}"
+az acr import -n "$ACR_NAME" -g "$RG" --source "$IMAGE" --image "${APP_NAME}:${TAG}"
 FULL_IMAGE="${ACR_NAME}.azurecr.io/${APP_NAME}:${TAG}"
 
 echo "▶ creating Container Apps environment…"

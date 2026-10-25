@@ -6,6 +6,8 @@ P2-style: every item is a **check you can see**. Grade from submitted **evidence
 > Full marks are reachable **locally**; the required Azure step is a checkbox; AKS is bonus.
 > Items marked **[auto]** are verified by the in-repo autograder / `hw4-grade_all.sh`; the rest are graded by eye.
 
+Add a short `README.md` (3–5 lines: what you deployed, how to run it, where the evidence is).
+
 ---
 
 ## A. Deployment & scaling (55 pts)
@@ -27,7 +29,7 @@ P2-style: every item is a **check you can see**. Grade from submitted **evidence
 | ✔ | Check (observable) | Evidence | Pts |
 |---|--------------------|----------|-----|
 | ☐ | Deployment uses a **rolling strategy** with `maxUnavailable: 0` | `deployment.yaml` | 5 |
-| ☐ | **Student-driven rolling update** — image → `:v2` under a live request loop, **0 dropped** | `rolling_update_demo.sh` output / recording | 12 |
+| ☐ | **Student-driven rolling update** — image → `:v2` under a live request loop, **0 dropped** | `bash scripts/rolling_update_demo_incluster.sh ghcr.io/rfsalas/trustbank-fraud:v2` output / recording | 12 |
 | ☐ | **Blue-green** cutover + rollback (or articulates rolling vs. blue-green) | blue-green demo / 2–3 sentences | 8 |
 
 ## C. Azure Container Apps — required (20 pts)

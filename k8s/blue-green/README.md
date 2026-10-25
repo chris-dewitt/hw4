@@ -35,5 +35,5 @@ kubectl port-forward deploy/trustbank-fraud-green 9000:8000
 | Cost | 1× pods (+1 surge) | 2× pods while both colors run |
 
 Demo the **rolling update** for the graded core (zero dropped requests via
-`scripts/rolling_update_demo.sh`); show **blue-green** as the "instant cutover +
+`bash scripts/rolling_update_demo_incluster.sh ghcr.io/rfsalas/trustbank-fraud:v2`); show **blue-green** as the "instant cutover +
 instant rollback" contrast.

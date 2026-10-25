@@ -52,4 +52,6 @@ is what's required.
 
 ## Stuck?
 - Verification problems → Azure for Students support, or ask the instructor.
+- `AlreadyInUse` on the registry name → someone else already owns that globally-unique ACR name.
+  `deploy_azure.sh` now detects this and appends a short random suffix automatically (it prints the new name).
 - "Quota exceeded" on the bonus → expected; skip AKS. The Container Apps deploy is the required part.

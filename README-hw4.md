@@ -68,12 +68,12 @@ Prereqs: Docker Desktop + Minikube, **or** open the repo in the `.devcontainer` 
 > failed when the real problem is your shell, not your Kubernetes deployment. To avoid this, prefix
 > the command with `MSYS_NO_PATHCONV=1`, e.g.:
 > ```bash
-> MSYS_NO_PATHCONV=1 ./scripts/rolling_update_demo_incluster.sh ghcr.io/rfsalas/trustbank-fraud:v2
+> MSYS_NO_PATHCONV=1 bash scripts/rolling_update_demo_incluster.sh ghcr.io/rfsalas/trustbank-fraud:v2
 > ```
 
 **1 — Bring up the baseline:**
 ```bash
-./scripts/local_up.sh          # applies Redis + API + Service + HPA, waits for ready
+bash scripts/local_up.sh       # applies Redis + API + Service + HPA, waits for ready
 ```
 
 **2 — Make the required edits (from the assignment), then re-apply:**
@@ -88,12 +88,12 @@ kubectl get pods,svc,hpa -o wide   # ← screenshot: 3/3 ready, HPA tuned to spe
 ```bash
 kubectl port-forward svc/trustbank-fraud 8080:80
 # in a second terminal:
-./scripts/smoke_test.sh http://localhost:8080   # ← screenshot: 200 + fraud decision
+bash scripts/smoke_test.sh http://localhost:8080   # ← screenshot: 200 + fraud decision
 ```
 
 **4 — Self-healing demo:**
 ```bash
-kubectl delete pod "$(kubectl get pod -l app=trustbank-fraud -o name | head -1)"
+kubectl delete "$(kubectl get pod -l app=trustbank-fraud -o name | head -1)"
 kubectl get pods                # ← screenshot: a NEW pod already restoring 3/3
 ```
 
@@ -103,9 +103,10 @@ For the **graded 0-dropped-requests evidence, use the in-cluster demo.** It runs
 request loop from a throwaway pod that hits the Service DNS name (`trustbank-fraud`),
 so it follows endpoints as pods are replaced:
 ```bash
-./scripts/rolling_update_demo_incluster.sh ghcr.io/rfsalas/trustbank-fraud:v2
+bash scripts/rolling_update_demo_incluster.sh ghcr.io/rfsalas/trustbank-fraud:v2
 #   → "dropped: 0"  ← screenshot
-kubectl apply -f k8s/blue-green/ && ./scripts/bluegreen_switch.sh green
+kubectl apply -f k8s/blue-green/ && bash scripts/bluegreen_switch.sh green
+kubectl delete -f k8s/blue-green/   # free CPU before any autoscaling test
 ```
 > **Do not use `kubectl port-forward` to measure zero-drop.** A port-forward binds to
 > **one** pod and dies the instant that pod is replaced — which is exactly what a rolling
@@ -116,8 +117,8 @@ kubectl apply -f k8s/blue-green/ && ./scripts/bluegreen_switch.sh green
 
 **6 — Answer the 3 questions** in `ANSWERS.md`.
 
-**HPA note:** needs `minikube addons enable metrics-server` (local_up.sh does this); give it a
-minute or `kubectl get hpa` shows `<unknown>`.
+**HPA note:** needs `minikube addons enable metrics-server` (local_up.sh does this); give it
+2–3 minutes; re-check before you screenshot, or `kubectl get hpa` shows `<unknown>`.
 
 **HPA shows `<unknown>`? — troubleshoot it:**
 1. Enable the metrics pipeline: `minikube addons enable metrics-server` (AKS has it built in).
@@ -127,7 +128,7 @@ minute or `kubectl get hpa` shows `<unknown>`.
    explain why the target can't be read.
 4. The target reads `<unknown>` until the pods actually report metrics. A crash loop (no running
    pod to measure) or a fresh rollout (new pods haven't reported yet) restarts that wait — so
-   `<unknown>` right after a change is normal; give it ~1 minute and re-check `kubectl get hpa`.
+   `<unknown>` right after a change is normal; give it 2–3 minutes; re-check before you screenshot (`kubectl get hpa`).
 
 **Codespace says recovery mode?**
 If VS Code shows "running in recovery mode", or `kubectl` is not found: commit-sync your repo
@@ -142,16 +143,16 @@ Easiest in **Azure Cloud Shell** (already signed in). This ships the API to real
 public URL. It runs the API alone (no Redis) — `/predict` still returns a valid score, so you verify
 the real cloud endpoint here.
 ```bash
-./deploy_azure.sh                               # imports the image → Container Apps → public URL
+bash deploy_azure.sh                            # imports the image → Container Apps → public URL
 curl https://<fqdn>/health                      # → {"status":"ok"}
-./scripts/smoke_test.sh https://<fqdn>          # POST /predict → a fraud decision  ← screenshot
-./teardown_azure.sh                             # ← DO THIS THE SAME DAY
+bash scripts/smoke_test.sh https://<fqdn>       # POST /predict → a fraud decision  ← screenshot
+bash teardown_azure.sh                          # ← DO THIS THE SAME DAY
 ```
 Auth is AAD / managed-identity (no keys); default region `eastus2` (override with `export LOCATION=<allowed region>`).
 
 ## Path C · Bonus — real AKS
 ```bash
-./aks_bonus.sh             # 1 node, applies k8s/ (incl. Redis); pulls the public image
+bash aks_bonus.sh          # 1 node, applies k8s/ (incl. Redis); pulls the public image
 # screenshot pods/svc/hpa + the LoadBalancer EXTERNAL-IP, then delete the resource group.
 ```
 Azure-for-Students has a low vCPU quota — if node creation fails on quota, that's expected; AKS is
