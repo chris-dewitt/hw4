@@ -1,6 +1,7 @@
 {
   "name": "DATA789 HW4 — Deploy Layer",
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  // Pinned 2026-10-25: base:ubuntu moved to 26.04; docker-in-docker moby does not support it.
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
     "ghcr.io/devcontainers/features/azure-cli:1": {},

@@ -129,6 +129,11 @@ minute or `kubectl get hpa` shows `<unknown>`.
    pod to measure) or a fresh rollout (new pods haven't reported yet) restarts that wait — so
    `<unknown>` right after a change is normal; give it ~1 minute and re-check `kubectl get hpa`.
 
+**Codespace says recovery mode?**
+If VS Code shows "running in recovery mode", or `kubectl` is not found: commit-sync your repo
+with the latest template fix, then Command Palette → "Codespaces: Rebuild Container"
+(or delete the Codespace and create a new one).
+
 ## Path B · Required — Azure Container Apps
 
 **New to Azure? Read [`AZURE-QUICKSTART.md`](AZURE-QUICKSTART.md) first** — sign-up, staying at ~$0, and one-click teardown.
