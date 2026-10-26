@@ -12,5 +12,5 @@ echo "▶ deleting resource group: $RG"
 echo "  (removes the app, environment, registry, and workspace)"
 az group delete -n "$RG" --yes --no-wait
 echo
-echo "✅ delete started. Confirm it's gone in a few minutes:"
+echo 'Deletion runs in the background and can take up to ~30 minutes. Re-run `az group exists -n <rg>` until it prints false — screenshot that (it is graded) — and do not redeploy until it does.'
 echo "      az group exists -n $RG      # should print: false"

@@ -65,8 +65,8 @@ Prereqs: Docker Desktop + Minikube, **or** open the repo in the `.devcontainer` 
 > **GitHub Codespaces, the included dev container, WSL, or Linux/macOS**.
 > **On Windows with Git Bash:** Git Bash silently rewrites Unix-style paths (things like `/predict`
 > and `/tmp/stop`) into Windows paths, which makes `rolling_update_demo_incluster.sh` look like it
-> failed when the real problem is your shell, not your Kubernetes deployment. To avoid this, prefix
-> the command with `MSYS_NO_PATHCONV=1`, e.g.:
+> failed when the real problem is your shell, not your Kubernetes deployment. `MSYS_NO_PATHCONV=1`
+> is only needed for `rolling_update_demo_incluster.sh` — do not set it globally. Prefix only that command, e.g.:
 > ```bash
 > MSYS_NO_PATHCONV=1 bash scripts/rolling_update_demo_incluster.sh ghcr.io/rfsalas/trustbank-fraud:v2
 > ```
@@ -146,8 +146,12 @@ the real cloud endpoint here.
 bash deploy_azure.sh                            # imports the image → Container Apps → public URL
 curl https://<fqdn>/health                      # → {"status":"ok"}
 bash scripts/smoke_test.sh https://<fqdn>       # POST /predict → a fraud decision  ← screenshot
+```
+On Azure, `/predict` takes ~3–5 s per request (no Redis in the cloud floor, so each call waits for the Redis timeout before the fallback scorer). That is expected.
+```bash
 bash teardown_azure.sh                          # ← DO THIS THE SAME DAY
 ```
+Deletion runs in the background and can take up to ~30 minutes. Re-run `az group exists -n <rg>` until it prints false — screenshot that (it is graded) — and do not redeploy until it does.
 Auth is AAD / managed-identity (no keys); default region `eastus2` (override with `export LOCATION=<allowed region>`).
 
 ## Path C · Bonus — real AKS

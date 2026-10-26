@@ -39,6 +39,7 @@ Read this first — especially if you've never used Azure.
   - **Portal:** **Resource groups** → click your `rg-data789-hw4-…` group → **Delete resource
     group** → type the name to confirm.
 - Deleting the resource group removes **everything inside it** in one shot.
+- Deletion runs in the background and can take up to ~30 minutes. Re-run `az group exists -n <rg>` until it prints false — screenshot that (it is graded) — and do not redeploy until it does.
 
 ## 5. Confirm you're clean
 - Portal → **Cost Management → Cost analysis** — your spend should be ~$0.
